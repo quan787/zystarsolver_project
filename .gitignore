@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+tests/
 
 models/10-35/
 models/30-100/

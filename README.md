@@ -122,7 +122,7 @@ solver = StarSolver(model="10-35", model_dir=r"C:\models")
 | `width` | yes | Image width in pixels. |
 | `height` | yes | Image height in pixels. |
 | `points` | yes | Raw pixel coordinates as `[[x, y], ...]`, sorted from brightest to faintest. |
-| `catalog` | no | `"HIP"` or `"GAIA"`. Defaults to `"HIP"`. |
+| `catalog` | no | `"HIP"` or `"GAIA"`. Defaults to `"HIP"`. This is a catalog preference, not a guarantee that every returned ID uses that catalog. |
 | `model_dir` | local only | Optional local model directory for `StarSolver`. |
 
 The local response contains one result per input point:
@@ -136,19 +136,24 @@ The local response contains one result per input point:
 ```
 
 The hosted API returns the same `results` field and also includes `ok`, `model`,
-and `catalog`. Empty `catalog_id` means no reliable catalog match for that
-input point.
+and `catalog`. Results are returned in the same order as input points. Empty
+`catalog_id` means no reliable catalog match for that input point. A low probability means the match is uncertain.
+
+Some stars only have one available catalog identifier. Even when `catalog` is set to `HIP` or `GAIA`, the response can still contain IDs from the other catalog for those stars.
 
 ## Input Data Quality
 
 - Choose `10-35` for horizontal FOV about 10-35 degrees; provide 25-40 stars.
 - Choose `30-100` for horizontal FOV about 30-100 degrees; provide 20-30 stars.
-- Points must be raw pixel coordinates `[x, y]`.
-- Sort points by image brightness from brightest to faintest.
+- Use near-full input counts when possible: 40 stars for `10-35`, 30 stars for `30-100`.
+- Points must be raw pixel coordinates `[x, y]`, measured in the same image coordinate system as `width` and `height`.
+- Sort points by image brightness from brightest to faintest. The model expects ordered star lists.
 - Coordinates must satisfy `0 <= x <= width` and `0 <= y <= height`.
-- Use near-full input counts when possible.
-- Lower missed-star rate, false-star rate, centroid noise, and sorting error improve reliability.
+- Dropped stars and false stars should ideally each be within about 15%.
+- Photometric sorting error should preferably be within about 0.2 magnitude.
+- Lower centroid noise improves reliability.
 - Landscape images usually work better. For portrait images, rotating before extracting points is recommended.
+- Keep aspect ratio within about 2:1 when possible.
 
 ## Licenses
 
@@ -279,7 +284,7 @@ solver = StarSolver(model="10-35", model_dir=r"C:\models")
 | `width` | 是 | 图像宽度，单位像素。 |
 | `height` | 是 | 图像高度，单位像素。 |
 | `points` | 是 | 原始像素坐标 `[[x, y], ...]`，按亮度从亮到暗排序。 |
-| `catalog` | 否 | `"HIP"` 或 `"GAIA"`，默认 `"HIP"`。 |
+| `catalog` | 否 | `"HIP"` 或 `"GAIA"`，默认 `"HIP"`。这是星表偏好，不保证每个返回编号都来自该星表。 |
 | `model_dir` | 仅本地 | `StarSolver` 使用的本地模型目录。 |
 
 本地推理返回每个输入点对应的结果：
@@ -293,18 +298,25 @@ solver = StarSolver(model="10-35", model_dir=r"C:\models")
 ```
 
 托管 API 也返回同样的 `results` 字段，并额外包含 `ok`、`model` 和 `catalog`。
-空的 `catalog_id` 表示该输入点没有可靠星表匹配。
+结果顺序与输入点顺序一致。空的 `catalog_id` 表示该输入点没有可靠星表匹配。
+较低的 probability 表示匹配不确定。
+
+有些恒星只有一种星表编号。即使指定了 `catalog` 为 `HIP` 或 `GAIA`，这些
+恒星仍然可能返回另一种星表的编号。
 
 ## 输入数据质量
 
 - `10-35` 适用于约 10-35 度水平视场，输入 25-40 颗星。
 - `30-100` 适用于约 30-100 度水平视场，输入 20-30 颗星。
-- 点坐标必须是原始像素坐标 `[x, y]`。
-- 按图像亮度从亮到暗排序。
+- 尽量使用接近上限的输入星点数：`10-35` 使用 40 颗，`30-100` 使用 30 颗。
+- 点坐标必须是原始像素坐标 `[x, y]`，并与 `width`、`height` 使用同一个图像坐标系。
+- 按图像亮度从亮到暗排序。模型期望输入星点列表已经排序。
 - 坐标必须满足 `0 <= x <= width` 和 `0 <= y <= height`。
-- 尽量使用接近上限的输入星点数。
-- 漏检、误检、质心误差和排序误差越低，结果通常越稳定。
+- 漏检星和误检星最好分别控制在约 15% 以内。
+- 测光排序误差最好控制在约 0.2 等以内。
+- 质心误差越低，结果通常越稳定。
 - 横向图像通常效果更好；竖图建议先旋转后再提取星点。
+- 宽高比尽量控制在约 2:1 以内。
 
 ## 许可
 
