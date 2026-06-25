@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+models/10-35/
+models/30-100/
+models/*.zip
+
+dist/
+build/
+*.egg-info/
+
+release_private/
+private_release_tools/
+upload_release*.py

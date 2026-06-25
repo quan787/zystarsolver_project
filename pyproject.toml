@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zystarsolver"
+version = "0.1.0"
+description = "Open ZY star solver API examples and ONNX Runtime local inference package."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "ZY Star Solver Authors" }]
+dependencies = [
+    "numpy",
+    "onnxruntime",
+]
+
+[project.optional-dependencies]
+examples = ["requests"]
+dev = ["pytest", "requests"]
+
+[project.scripts]
+zystarsolver-download-models = "ZYstarsolver.download_models:main"
+
+[tool.setuptools]
+packages = ["ZYstarsolver"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

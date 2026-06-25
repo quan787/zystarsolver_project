@@ -1,0 +1,167 @@
+{
+  "ok": true,
+  "model": "10-35",
+  "catalog": "GAIA",
+  "results": [
+    {
+      "catalog_id": "GAIA4683897617110115200",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "GAIA4684097178470252032",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "",
+      "probability": 0.9999992847442627
+    },
+    {
+      "catalog_id": "GAIA4684720292326084608",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "GAIA6381503197703326976",
+      "probability": 0.9999806880950928
+    },
+    {
+      "catalog_id": "GAIA4691986930313219072",
+      "probability": 0.9999862909317017
+    },
+    {
+      "catalog_id": "GAIA6382933589314905472",
+      "probability": 0.9996539354324341
+    },
+    {
+      "catalog_id": "GAIA4683888851079536512",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "GAIA6379216007358529792",
+      "probability": 0.9998859167098999
+    },
+    {
+      "catalog_id": "GAIA6388286565970670976",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "GAIA6359059824621776256",
+      "probability": 0.6167483925819397
+    },
+    {
+      "catalog_id": "GAIA6389620720251631360",
+      "probability": 0.9999997615814209
+    },
+    {
+      "catalog_id": "GAIA6390641170121520896",
+      "probability": 0.9999741315841675
+    },
+    {
+      "catalog_id": "GAIA6377424318801186304",
+      "probability": 0.9999779462814331
+    },
+    {
+      "catalog_id": "GAIA6353376831270492800",
+      "probability": 0.9999638795852661
+    },
+    {
+      "catalog_id": "GAIA6386542083398391808",
+      "probability": 0.9999923706054688
+    },
+    {
+      "catalog_id": "GAIA6383747713251978624",
+      "probability": 0.9959176182746887
+    },
+    {
+      "catalog_id": "GAIA6384510877400590336",
+      "probability": 0.9999074935913086
+    },
+    {
+      "catalog_id": "GAIA6384182570100544000",
+      "probability": 0.9999996423721313
+    },
+    {
+      "catalog_id": "GAIA4703064819200500096",
+      "probability": 0.997745931148529
+    },
+    {
+      "catalog_id": "GAIA6389300728008150784",
+      "probability": 0.9999809265136719
+    },
+    {
+      "catalog_id": "GAIA6354274032759083776",
+      "probability": 0.999101996421814
+    },
+    {
+      "catalog_id": "GAIA6391331216746941440",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "GAIA6383892951865893376",
+      "probability": 0.9999852180480957
+    },
+    {
+      "catalog_id": "GAIA4684936174561038336",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "",
+      "probability": 0.659792959690094
+    },
+    {
+      "catalog_id": "GAIA6378203288429742720",
+      "probability": 0.999788224697113
+    },
+    {
+      "catalog_id": "GAIA4691995692046507520",
+      "probability": 0.999961256980896
+    },
+    {
+      "catalog_id": "GAIA6382469049948128512",
+      "probability": 0.9999945163726807
+    },
+    {
+      "catalog_id": "GAIA4635693378080387200",
+      "probability": 0.9998177886009216
+    },
+    {
+      "catalog_id": "GAIA4703448548758658432",
+      "probability": 0.9994598031044006
+    },
+    {
+      "catalog_id": "GAIA4685283173558955008",
+      "probability": 0.9993879795074463
+    },
+    {
+      "catalog_id": "GAIA4690231525639747072",
+      "probability": 0.9913594126701355
+    },
+    {
+      "catalog_id": "GAIA4706625037851229056",
+      "probability": 0.9973125457763672
+    },
+    {
+      "catalog_id": "GAIA6383476717995042688",
+      "probability": 0.9999988079071045
+    },
+    {
+      "catalog_id": "GAIA6390800290069676544",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "GAIA4685193185404256896",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "GAIA4684018700827280128",
+      "probability": 1.0
+    },
+    {
+      "catalog_id": "GAIA6397491952196722944",
+      "probability": 0.8075692057609558
+    },
+    {
+      "catalog_id": "GAIA6380214844952702848",
+      "probability": 0.9999603033065796
+    }
+  ]
+}
