@@ -1,4 +1,5 @@
 import os
+from collections.abc import Sequence
 from pathlib import Path
 import time
 
@@ -6,9 +7,12 @@ import numpy as np
 
 from .artifacts import ArtifactSet, find_local_artifacts, load_json_map
 from .catalog import prefer_catalog
-from .errors import ModelLoadError
+from .errors import ModelLoadError, ValidationError
 from .models import get_model_spec, normalize_catalog
 from .preprocess import preprocess_points, validate_request
+
+
+DEFAULT_BATCH_SIZE = 256
 
 
 def _softmax_max_prob(logits: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -100,6 +104,33 @@ class StarSolver:
         self.overlap_map = {}
         self.artifact_set = None
 
+    def _format_results(self, logits: np.ndarray, requested_catalog: str) -> list[dict]:
+        predicted_class_ids, probabilities = _softmax_max_prob(logits)
+        raw_catalog_ids = [
+            str(self.class_id_to_catalog_id.get(str(class_id), ""))
+            for class_id in predicted_class_ids.tolist()
+        ]
+        preferred_ids = prefer_catalog(raw_catalog_ids, requested_catalog, self.overlap_map)
+        return [
+            {"catalog_id": catalog_id, "probability": float(probability)}
+            for catalog_id, probability in zip(preferred_ids, probabilities.tolist())
+        ]
+
+    @staticmethod
+    def _normalize_points_batch(points_batch) -> list:
+        if not isinstance(points_batch, Sequence) or isinstance(points_batch, (str, bytes)):
+            raise ValidationError("points_batch must be a non-empty list of point lists")
+        normalized = list(points_batch)
+        if not normalized:
+            raise ValidationError("points_batch must be a non-empty list of point lists")
+        return normalized
+
+    @staticmethod
+    def _normalize_batch_size(batch_size) -> int:
+        if isinstance(batch_size, bool) or not isinstance(batch_size, int) or batch_size <= 0:
+            raise ValidationError("batch_size must be a positive integer")
+        return batch_size
+
     def predict(self, width, height, points, catalog: str = "HIP") -> dict[str, list[dict]]:
         if self.session is None:
             raise ModelLoadError("this StarSolver has been closed; create a new StarSolver")
@@ -110,14 +141,37 @@ class StarSolver:
         input_array = np.asarray([features], dtype=np.float32)
         logits = self.session.run(["logits"], {"features": input_array})[0]
         result_logits = np.asarray(logits)[0, :num_points, :]
-        predicted_class_ids, probabilities = _softmax_max_prob(result_logits)
-        raw_catalog_ids = [
-            str(self.class_id_to_catalog_id.get(str(class_id), ""))
-            for class_id in predicted_class_ids.tolist()
-        ]
-        preferred_ids = prefer_catalog(raw_catalog_ids, requested_catalog, self.overlap_map)
-        results = [
-            {"catalog_id": catalog_id, "probability": float(probability)}
-            for catalog_id, probability in zip(preferred_ids, probabilities.tolist())
-        ]
+        results = self._format_results(result_logits, requested_catalog)
+        return {"results": results}
+
+    def predict_batch(
+        self,
+        width,
+        height,
+        points_batch,
+        catalog: str = "HIP",
+        batch_size: int = DEFAULT_BATCH_SIZE,
+    ) -> dict[str, list[list[dict]]]:
+        if self.session is None:
+            raise ModelLoadError("this StarSolver has been closed; create a new StarSolver")
+
+        requested_catalog = normalize_catalog(catalog)
+        normalized_batch = self._normalize_points_batch(points_batch)
+        normalized_batch_size = self._normalize_batch_size(batch_size)
+        results = []
+        for batch_start in range(0, len(normalized_batch), normalized_batch_size):
+            batch_points = normalized_batch[batch_start : batch_start + normalized_batch_size]
+            features_batch = []
+            num_points_batch = []
+            for points in batch_points:
+                features, num_points = preprocess_points(self.model, width, height, points)
+                features_batch.append(features)
+                num_points_batch.append(num_points)
+
+            input_array = np.asarray(features_batch, dtype=np.float32)
+            logits = np.asarray(self.session.run(["logits"], {"features": input_array})[0])
+            results.extend(
+                self._format_results(logits[index, :num_points, :], requested_catalog)
+                for index, num_points in enumerate(num_points_batch)
+            )
         return {"results": results}

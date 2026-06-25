@@ -108,6 +108,20 @@ with StarSolver(model="30-100") as solver:
     result = solver.predict(width=1920, height=1200, points=points, catalog="HIP")
 ```
 
+Batch local inference uses one model, width, height, and catalog for all samples;
+`points_batch` contains multiple `[[x, y], ...]` point lists. Large batches are
+processed in chunks; the default `batch_size` is 256.
+
+```python
+with StarSolver(model="30-100") as solver:
+    result = solver.predict_batch(
+        width=1920,
+        height=1200,
+        points_batch=[points1, points2],
+        catalog="HIP",
+    )
+```
+
 Use a custom model directory:
 
 ```python
@@ -122,6 +136,8 @@ solver = StarSolver(model="10-35", model_dir=r"C:\models")
 | `width` | yes | Image width in pixels. |
 | `height` | yes | Image height in pixels. |
 | `points` | yes | Raw pixel coordinates as `[[x, y], ...]`, sorted from brightest to faintest. |
+| `points_batch` | local batch only | Multiple `points` lists for local `predict_batch()`. |
+| `batch_size` | local batch only | Optional local chunk size for `predict_batch()`. Defaults to 256. |
 | `catalog` | no | `"HIP"` or `"GAIA"`. Defaults to `"HIP"`. This is a catalog preference, not a guarantee that every returned ID uses that catalog. |
 | `model_dir` | local only | Optional local model directory for `StarSolver`. |
 
@@ -270,6 +286,20 @@ with StarSolver(model="30-100") as solver:
     result = solver.predict(width=1920, height=1200, points=points, catalog="HIP")
 ```
 
+本地批量推理对所有样本使用同一个模型、图像宽高和星表偏好；`points_batch`
+包含多个 `[[x, y], ...]` 星点列表。大批量输入会按块处理，默认 `batch_size`
+为 256。
+
+```python
+with StarSolver(model="30-100") as solver:
+    result = solver.predict_batch(
+        width=1920,
+        height=1200,
+        points_batch=[points1, points2],
+        catalog="HIP",
+    )
+```
+
 指定模型目录：
 
 ```python
@@ -284,6 +314,8 @@ solver = StarSolver(model="10-35", model_dir=r"C:\models")
 | `width` | 是 | 图像宽度，单位像素。 |
 | `height` | 是 | 图像高度，单位像素。 |
 | `points` | 是 | 原始像素坐标 `[[x, y], ...]`，按亮度从亮到暗排序。 |
+| `points_batch` | 仅本地批量 | 多个 `points` 列表，用于本地 `predict_batch()`。 |
+| `batch_size` | 仅本地批量 | `predict_batch()` 的分块大小，默认 256。 |
 | `catalog` | 否 | `"HIP"` 或 `"GAIA"`，默认 `"HIP"`。这是星表偏好，不保证每个返回编号都来自该星表。 |
 | `model_dir` | 仅本地 | `StarSolver` 使用的本地模型目录。 |
 
